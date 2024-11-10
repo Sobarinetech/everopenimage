@@ -32,3 +32,22 @@ if uploaded_image:
         image_data = convert_image(uploaded_image, output_format)
         download_image(image_data, output_format)
         st.success("Image converted successfully!")
+
+# Additional options
+st.subheader("Additional Options")
+resize_image = st.checkbox("Resize Image")
+if resize_image:
+    width = st.number_input("Width", min_value=100, max_value=1000, value=800)
+    height = st.number_input("Height", min_value=100, max_value=1000, value=600)
+
+    def resize_image_func(image, width, height):
+        img = Image.open(image)
+        img = img.resize((width, height))
+        output_buffer = io.BytesIO()
+        img.save(output_buffer, format=output_format.lower())
+        return output_buffer.getvalue()
+
+    if st.button("Resize and Convert Image"):
+        image_data = resize_image_func(uploaded_image, width, height)
+        download_image(image_data, output_format)
+        st.success("Image resized and converted successfully!")
